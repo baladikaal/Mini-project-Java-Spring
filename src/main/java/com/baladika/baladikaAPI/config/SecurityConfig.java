@@ -1,6 +1,7 @@
-package com.baladika.baladikaAPI.jwt;
+package com.baladika.baladikaAPI.config;
 
-import com.baladika.baladikaAPI.service.AuthService;
+import com.baladika.baladikaAPI.jwt.JWT;
+import com.baladika.baladikaAPI.jwt.JWTAuthenticationFilter;
 import com.baladika.baladikaAPI.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -17,10 +19,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService customUserDetailsService;
+    private final JWT jwt;
 
     @Autowired
-    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService, JWT jwt) {
         this.customUserDetailsService = customUserDetailsService;
+        this.jwt = jwt;
     }
 
     @Override
@@ -38,7 +42,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/login", "/auth/register").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/api/recruitment/positions").permitAll() // Protect the jobs endpoint
+                .anyRequest().authenticated()
+                .and()
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwt))
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 }
 
