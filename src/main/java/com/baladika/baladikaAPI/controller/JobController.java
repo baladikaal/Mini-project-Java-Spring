@@ -4,9 +4,7 @@ import com.baladika.baladikaAPI.entity.JobEntity;
 import com.baladika.baladikaAPI.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +24,18 @@ public class JobController {
         List<JobEntity> jobs = jobService.getJobsFromApi();
         return ResponseEntity.ok(jobs);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<JobEntity> getJobDetail(@PathVariable String id, @RequestHeader("Authorization") String authorizationHeader) {
+        String jwtToken = authorizationHeader.substring(7);
+
+        JobEntity jobDetail = jobService.getJobDetailFromApi(id, jwtToken);
+        if (jobDetail == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(jobDetail);
+    }
+
 }
 
 
