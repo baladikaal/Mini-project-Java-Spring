@@ -15,6 +15,7 @@ public class UserEntity {
     @Column(unique = true)
     private String username;
     private String password;
+    @Column(columnDefinition = "boolean default true")
     private boolean isActive;
 
     // Constructor tanpa parameter
