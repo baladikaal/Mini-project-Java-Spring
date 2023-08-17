@@ -51,7 +51,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
         try {
             String jwtToken = token.substring(7);
-            Long userId = extractUserIdFromToken(jwtToken);  // Menggunakan tipe data Long
+            Long userId = extractUserIdFromToken(jwtToken);
 
             Optional<UserEntity> user = Optional.ofNullable(userRepository.findByIdAndIsActiveTrue(userId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "unauthorized")));
@@ -63,10 +63,10 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         }
     }
 
-    private Long extractUserIdFromToken(String token) {  // Mengembalikan tipe data Long
+    private Long extractUserIdFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwt.getSecretKey()).parseClaimsJws(token).getBody();
 
-        return claims.get("userId", Long.class);  // Menggunakan tipe data Long
+        return claims.get("userId", Long.class);
     }
 
 }

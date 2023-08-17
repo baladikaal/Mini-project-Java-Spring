@@ -1,7 +1,7 @@
 package com.baladika.baladikaAPI.config;
 
 import com.baladika.baladikaAPI.jwt.JWT;
-import com.baladika.baladikaAPI.jwt.JWTAuthenticationFilter;
+import com.baladika.baladikaAPI.jwt.JwtFilter;
 import com.baladika.baladikaAPI.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -42,11 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/auth/login", "/auth/register").permitAll()
-                .antMatchers("/api/recruitment/positions").permitAll() // Protect the jobs endpoint
+                .antMatchers("/api/recruitment/positions").authenticated() // Protect the jobs endpoint
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), jwt))
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .addFilterBefore(new JwtFilter(jwt), UsernamePasswordAuthenticationFilter.class);
     }
 }
 

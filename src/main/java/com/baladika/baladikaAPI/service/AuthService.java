@@ -43,7 +43,7 @@ public class AuthService {
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setActive(true); // Set isActive to true explicitly
+        newUser.setActive(true);
 
         return userRepository.save(newUser);
     }
