@@ -1,36 +1,41 @@
 package com.baladika.baladikaAPI.entity;
 
 
-import jakarta.persistence.*;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "tbl_user")
 public class UserEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(unique = true)
     private String username;
     private String password;
+    private boolean isActive;
 
+    // Constructor tanpa parameter
     public UserEntity() {
     }
 
-    public UserEntity(long userId, String username, String password) {
-
-        this.userId = userId;
+    // Constructor dengan parameter
+    public UserEntity(Long id, String username, String password, boolean isActive) {
+        this.id = id;
         this.username = username;
         this.password = password;
+        this.isActive = isActive;
     }
 
-    public long getUserId() {
-        return userId;
+    // Getter dan Setter
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -48,4 +53,13 @@ public class UserEntity {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 }
+

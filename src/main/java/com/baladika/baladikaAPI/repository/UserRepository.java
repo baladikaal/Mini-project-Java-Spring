@@ -1,4 +1,4 @@
-package com.baladika.baladikaAPI.resolver;
+package com.baladika.baladikaAPI.repository;
 
 import com.baladika.baladikaAPI.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,5 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity,Long> {
-    Optional<UserEntity> findByIdAndIsActiveTrue(String id);
+    Optional<UserEntity> findByIdAndIsActiveTrue(Long id);
+    Optional<UserEntity> findByUsername(String username);
+    boolean existsByUsername(String id);
 }

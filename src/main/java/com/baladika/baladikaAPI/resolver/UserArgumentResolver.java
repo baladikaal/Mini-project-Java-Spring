@@ -1,12 +1,12 @@
-package com.baladika.baladikaAPI.repository;
+package com.baladika.baladikaAPI.resolver;
 
-import com.baladika.baladikaAPI.resolver.UserRepository;
 import com.baladika.baladikaAPI.entity.UserEntity;
 import com.baladika.baladikaAPI.jwt.JWT;
+import com.baladika.baladikaAPI.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -51,7 +51,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
         try {
             String jwtToken = token.substring(7);
-            String userId = extractUserIdFromToken(jwtToken);
+            Long userId = extractUserIdFromToken(jwtToken);  // Menggunakan tipe data Long
 
             Optional<UserEntity> user = Optional.ofNullable(userRepository.findByIdAndIsActiveTrue(userId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "unauthorized")));
@@ -63,9 +63,10 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         }
     }
 
-    private String extractUserIdFromToken(String token) {
+    private Long extractUserIdFromToken(String token) {  // Mengembalikan tipe data Long
         Claims claims = Jwts.parser().setSigningKey(jwt.getSecretKey()).parseClaimsJws(token).getBody();
 
-        return claims.get("userId", String.class);
+        return claims.get("userId", Long.class);  // Menggunakan tipe data Long
     }
+
 }
